@@ -1,0 +1,133 @@
+basePath: /
+definitions:
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.GetSentMessagesResponse:
+    properties:
+      sentMessages:
+        items:
+          $ref: '#/definitions/models.Message'
+        type: array
+    type: object
+  models.Message:
+    description: Message object
+    properties:
+      content:
+        type: string
+      messageID:
+        type: string
+      recipient:
+        type: string
+      sentAt:
+        type: string
+      status:
+        type: string
+    type: object
+  models.SendMessageHandlerResponse:
+    properties:
+      message:
+        example: Accepted
+        type: string
+      messageId:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+    type: object
+  models.SendMessageRequest:
+    properties:
+      content:
+        example: hey there!
+        type: string
+      to:
+        example: "+905551111111"
+        type: string
+    type: object
+  models.StartSendingResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  models.StopSendingResponse:
+    properties:
+      status:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This API is for sending and managing messages in automated way.
+  title: Automated Message Sender API
+  version: "1.0"
+paths:
+  /send:
+    post:
+      consumes:
+      - application/json
+      description: Sends a message to a specified recipient
+      parameters:
+      - description: Message Content and Recipient
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.SendMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/models.SendMessageHandlerResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Send a message
+      tags:
+      - Messaging
+  /sent-messages:
+    get:
+      description: Retrieves all messages with status 'sent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetSentMessagesResponse'
+      summary: Get sent messages
+      tags:
+      - Messaging
+  /start:
+    post:
+      description: Starts the automatic message sending process
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StartSendingResponse'
+      summary: Start sending messages
+      tags:
+      - Messaging
+  /stop:
+    post:
+      description: Stops the automatic message sending process
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StopSendingResponse'
+      summary: Stop sending messages
+      tags:
+      - Messaging
+swagger: "2.0"
